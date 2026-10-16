@@ -1,8 +1,8 @@
 {
   "name": "Pensioenplan",
   "short_name": "Pensioenplan",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#060709",
   "theme_color": "#060709",
