@@ -83,11 +83,12 @@ async function selectAll(table) {
 async function load() {
   loader("Je gegevens ophalen…");
   try {
-    const [ins, tr, ca, pr, se, im] = await Promise.all([
+    const timeout = new Promise((_, no) => setTimeout(() => no(new Error("de database reageert niet. Mogelijk staat je Supabase-project op pauze; zet het weer aan via supabase.com en ververs deze pagina")), 20000));
+    const [ins, tr, ca, pr, se, im] = await Promise.race([timeout, Promise.all([
       selectAll("pp_instruments"), selectAll("pp_trades"), selectAll("pp_cash"), selectAll("pp_prices"),
       sb.from("pp_settings").select("data").maybeSingle(),
       sb.from("pp_imports").select("kind,filename,rows,added,created_at").order("created_at", { ascending: false }).limit(12)
-    ]);
+    ])]);
     RAW = { instruments: ins, trades: tr, cash: ca };
     PRICES = {}; pr.forEach(r => { PRICES[r.symbol] = { currency: r.currency, rows: r.data || [], updated_at: r.updated_at }; });
     SETTINGS = (se.data && se.data.data) || {};
